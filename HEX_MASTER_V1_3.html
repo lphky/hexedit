@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b31">
+  <title>HEX MASTER V1.3｜十六進制與記憶體修改教學</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1323;--panel:#14213a;--panel2:#1b2a46;--line:#32415f;--ink:#f1f5ff;--muted:#a8bad7;--cyan:#75d5e7;--green:#60ddb3;--red:#ff838c;--amber:#ffc97c;--radius:17px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 8% -5%,#203758 0%,transparent 37%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.55}
+    button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.46}button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .shell{max-width:1380px;margin:auto;padding:26px 22px 46px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:20px;flex-wrap:wrap}.brand{display:flex;gap:14px;align-items:center}.mark{display:grid;place-items:center;background:linear-gradient(145deg,#247a9e,#415bba);width:56px;height:56px;border-radius:15px;font-weight:900;letter-spacing:-2px;font-size:22px;box-shadow:0 9px 30px #0004}.brand h1{margin:0;font-size:clamp(24px,3vw,34px);letter-spacing:.05em}.subtitle{margin:1px 0;color:var(--muted);font-size:14px}.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tag{padding:6px 10px;border:1px solid var(--line);border-radius:20px;color:var(--cyan);font-size:12px;font-weight:700;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(315px,.85fr) minmax(415px,1.15fr);gap:17px;align-items:start}.panel{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(170deg,#16243e 0%,#111d34 100%);overflow:hidden;box-shadow:0 16px 50px #0002}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:10px}.panel-head h2{font-size:17px;margin:0}.panel-body{padding:19px 20px}.muted{color:var(--muted)}.small{font-size:13px}.micro{font-size:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.pill{border:1px solid var(--line);border-radius:20px;color:var(--cyan);font-size:12px;padding:5px 10px}.notice{border:1px solid #477c85;background:#1a3a46;color:#d9f9ff;border-radius:11px;padding:12px 13px;margin-bottom:15px;font-size:13px}.note-amber{border-color:#866d42;background:#3a3025;color:#ffe6b8}.note-good{border-color:#397a64;background:#1b3d37;color:#d2ffe8}
+    .combatants{display:grid;grid-template-columns:1fr 1fr;gap:12px}.combatant{border-radius:13px;background:var(--panel2);border:1px solid #394968;padding:13px}.avatar{height:91px;display:grid;place-items:center;font-size:51px;line-height:1;margin-bottom:10px;user-select:none}.avatar.hero{background:radial-gradient(circle,#304d78 10%,transparent 68%)}.avatar.enemy{background:radial-gradient(circle,#315a54 10%,transparent 68%)}.combatant h3{font-size:15px;margin:0 0 9px}.numbers{font-weight:800;font-variant-numeric:tabular-nums}.hpbar{height:9px;background:#3c4557;border-radius:20px;overflow:hidden;margin:8px 0 10px}.hpfill{height:100%;width:100%;border-radius:20px;background:linear-gradient(90deg,#27bf8f,#80ebba);transition:width .24s ease}.hpfill.enemybar{background:linear-gradient(90deg,#ff6975,#ffa1a7)}.stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:12px;color:var(--muted)}.stats b{color:var(--ink);font-size:14px}.inventory{display:flex;align-items:center;gap:12px;margin:15px 0;background:#192a45;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.potionicon{font-size:27px}.inventory .count{font-size:22px;font-weight:800;margin-left:auto;color:var(--amber)}.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border-radius:11px;padding:11px 13px;border:1px solid #4579a6;background:#245c88;color:white;font-weight:750;transition:transform .12s,background .12s;min-height:45px}.btn:hover:not(:disabled){background:#2c75ab}.btn:active:not(:disabled){transform:scale(.98)}.btn.secondary{background:#253755;border-color:#4c5c78}.btn.secondary:hover:not(:disabled){background:#30486b}.btn.good{background:#136c5a;border-color:#3e9e82}.btn.good:hover:not(:disabled){background:#167d68}.btn.warn{border-color:#7a5b42;background:#513d30}.btn.wide{width:100%}.end-box{margin-top:13px;border-radius:12px;padding:14px;background:#18334a;border:1px solid #416781}.end-box[hidden],.btn[hidden],[hidden]{display:none!important}.end-box strong{display:block;margin-bottom:7px}.log{margin-top:16px;border-top:1px solid var(--line);padding-top:13px}.log-title{font-size:12px;letter-spacing:.1em;color:var(--muted);font-weight:800;text-transform:uppercase}.log-lines{display:grid;gap:6px;margin-top:9px;max-height:129px;overflow:auto;font-size:13px;color:#d5e4fa}.log-line{padding-left:10px;border-left:2px solid #486581}
+    .scanner-info{margin-bottom:17px}.scanner-info p{margin:0}.modebar{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#20354f;border:1px solid #49647e;border-radius:13px;padding:12px 14px;margin-bottom:15px}.modebar strong{display:block;font-size:14px}.modebar .small{display:block}.search-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-top:10px}.field{background:#0f1b30;color:#fff;border:1px solid #4a5c79;border-radius:10px;padding:11px 12px;min-width:0;width:100%;font-variant-numeric:tabular-nums}.field::placeholder{color:#7f94b0}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:19px 0 9px}.section-title h3{margin:0;font-size:14px}.switch{display:flex;gap:3px;background:#0d182d;padding:4px;border-radius:10px;border:1px solid var(--line);flex-shrink:0}.switch button{border:0;border-radius:7px;padding:8px 16px;background:transparent;color:var(--muted);font-weight:850}.switch button.active{background:#296b8c;color:#fff;box-shadow:0 2px 8px #0005}.memory-dump{display:grid;gap:5px;grid-template-columns:repeat(2,minmax(0,1fr));padding:9px;max-height:254px;overflow:auto;background:#091426;border:1px solid var(--line);border-radius:12px}.memory-dump.hex{grid-template-columns:repeat(4,minmax(0,1fr))}.memory-cell{display:flex;justify-content:space-between;align-items:center;gap:5px;border:1px solid #273c55;background:#12223a;border-radius:6px;padding:7px 8px;min-width:0;white-space:nowrap;font-size:10px}.memory-cell .mem-address{color:#87aec9}.memory-cell .mem-value{color:#c0d9f3}.memory-cell.candidate{border-color:#a47d4a;background:#332e2c}.memory-cell.identified{border-color:#3e9d88;background:#173b3d}.memory-cell.identified .mem-value{color:#8bffcf}.memory-dump.bin .memory-cell{font-size:10px;letter-spacing:0}.memory-caption{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:6px 0 0;font-size:12px;color:var(--muted)}.results-box{border:1px solid var(--line);background:#0e1a2e;border-radius:12px;overflow:auto;max-height:290px}.results-box table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}.results-box th{position:sticky;top:0;background:#23334f;color:#a9c0df;font-size:12px;letter-spacing:.02em}.results-box th,.results-box td{padding:10px 12px;border-bottom:1px solid #2d3d58;white-space:nowrap}.results-box tr:last-child td{border-bottom:0}.results-box tr.unique{background:#153d3a}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em;font-variant-numeric:tabular-nums}.subtle{color:#8da3c1}.goodtext{color:var(--green)}.result-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}.known{display:flex;flex-wrap:wrap;gap:7px;min-height:34px}.known button{padding:7px 10px;border-radius:9px;border:1px solid #48617c;background:#223651;color:#ecf6ff;font-size:12px}.known button.selected{background:#1f6359;border-color:#4ccbac}.editor{border:1px solid #47788a;border-radius:13px;background:#192f43;padding:15px;margin-top:13px}.editor-title{font-weight:800;margin-bottom:7px}.editor-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin-top:11px;align-items:end}.label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}.help{margin-top:17px;border:1px dashed #51647e;background:#122239;border-radius:12px;padding:12px 14px}.help summary{cursor:pointer;font-weight:700;font-size:13px}.help ol{padding-left:21px;font-size:13px;color:#ccd9eb;margin-bottom:0}.footer{margin-top:21px;color:var(--muted);font-size:12px;text-align:center}.flash{animation:flash .34s ease}@keyframes flash{0%,100%{filter:none}50%{filter:brightness(1.65)}}
+    /* Minimal pixel sprites: all assets are generated locally from an SVG pixel grid. */
+    .avatar{height:115px;overflow:visible}.avatar.hero,.avatar.enemy{background:radial-gradient(circle at 50% 72%,#33567565,transparent 70%)}
+    .pixel-sprite{width:103px;height:103px;display:block;image-rendering:pixelated;filter:drop-shadow(0 7px 0 #07132780)}
+    .pixel-sprite svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}
+    .pixel-sprite.boss{width:113px;height:113px}
+    .combatant.hit .avatar{animation:hitBlink .24s linear}.combatant.healed .avatar{animation:healGlow .36s ease-out}
+    @keyframes hitBlink{50%{filter:brightness(1.5) sepia(.7) saturate(3) hue-rotate(325deg);transform:translateX(3px)}}
+    @keyframes healGlow{50%{filter:drop-shadow(0 0 12px #75efb7);transform:translateY(-2px)}}
+    .nibble-demo{display:flex;gap:5px;justify-content:space-between;flex-wrap:wrap;background:#102c41;border:1px solid #3b8798;border-radius:11px;margin:-7px 0 14px;padding:9px 11px;animation:nibbleIn .58s ease-out}
+    .nibble-demo span{font-size:12px;font-family:ui-monospace,monospace;color:#dffaff;white-space:nowrap}
+    @keyframes nibbleIn{0%{opacity:0;transform:translateY(-3px)}40%,80%{opacity:1}100%{opacity:0}}
+    .results-box tr.eliminated{background:#512d36;color:#ffb4b9;animation:discard .52s ease-in both}
+    .results-box tr.survivor{background:#15483f;color:#aaffd6;animation:keep .52s ease-out}
+    @keyframes discard{0%{opacity:1;text-decoration:none}45%{background:#733b45;text-decoration:line-through}100%{opacity:0;transform:translateX(9px)}}
+    @keyframes keep{0%{background:#376850}100%{background:#15483f}}
+    .scan-counter{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:9px;font-size:12px;color:#d6e7f5}
+    .scan-counter b{color:var(--cyan)}.scan-counter .removed{color:#ffa1aa}.scan-counter .remaining{color:var(--green)}
+    .reflection{border-top:1px solid #486983;margin-top:10px;padding-top:10px}.reflection ol{padding-left:21px;margin:8px 0 0;font-size:13px}
+    @media(max-width:930px){.layout{grid-template-columns:1fr}.shell{padding:18px 13px 35px}.panel-body{padding:16px}.panel-head{padding:16px}}
+    @media(max-width:650px){.memory-dump{grid-template-columns:1fr}.memory-dump.hex{grid-template-columns:repeat(2,minmax(0,1fr))}.modebar{align-items:flex-start;flex-wrap:wrap}}
+    @media(max-width:540px){.search-row{grid-template-columns:1fr 1fr}.search-row input{grid-column:1/-1}.search-row .btn{padding:10px 7px}.combatants{gap:8px}.combatant{padding:10px}.avatar{height:94px}.pixel-sprite{width:84px;height:84px}.pixel-sprite.boss{width:92px;height:92px}.combatant h3{font-size:13px}.stats{grid-template-columns:1fr}.editor-grid{grid-template-columns:1fr}.top-actions{width:100%}.top-actions .btn{flex:1}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand"><div class="mark" aria-hidden="true">0x</div><div><h1>HEX MASTER <span class="small muted">V1.3</span></h1><p class="subtitle">從遊戲數值發現二進制與十六進制｜中三 ICT</p></div></div>
+      <div class="top-actions"><span class="tag">8-bit 記憶體模擬</span><button id="resetAll" class="btn secondary" type="button">重設整個教學</button></div>
+    </header>
+    <div class="layout">
+      <section class="panel" aria-labelledby="gameTitle">
+        <div class="panel-head"><h2 id="gameTitle">簡易對戰模擬器</h2><span id="levelBadge" class="pill">第 1 / 5 關</span></div>
+        <div class="panel-body">
+          <div class="notice" id="gameHint">先按「攻擊」感受 HP 變化；開啟右邊 Game Master 搜尋記憶體。</div>
+          <div class="combatants">
+            <div class="combatant" id="heroCard">
+              <div class="avatar hero" aria-hidden="true"><div class="pixel-sprite" id="heroSprite"></div></div><h3>勇者</h3>
+              <div class="row small"><span>HP</span><strong class="numbers" id="heroHp">100 / 100</strong></div>
+              <div class="hpbar"><div id="heroBar" class="hpfill"></div></div>
+              <div class="stats"><span>ATK <b id="heroAtk">15</b></span><span>DEF <b id="heroDef">5</b></span></div>
+            </div>
+            <div class="combatant" id="enemyCard">
+              <div class="avatar enemy" aria-hidden="true"><div class="pixel-sprite" id="enemySprite"></div></div><h3 id="enemyName">普通史萊姆</h3>
+              <div class="row small"><span>HP</span><strong class="numbers" id="enemyHp">30 / 30</strong></div>
+              <div class="hpbar"><div id="enemyBar" class="hpfill enemybar"></div></div>
+              <div class="stats"><span>ATK <b id="enemyAtk">8</b></span><span>DEF <b id="enemyDef">2</b></span></div>
+            </div>
+          </div>
+          <div class="inventory"><span class="potionicon" aria-hidden="true">🧪</span><div><b>回復藥水</b><div class="small muted">每支回復 20 HP，使用後敵人會行動</div></div><div id="potionCount" class="count">× 5</div></div>
+          <div class="button-grid"><button id="attackBtn" class="btn" type="button">⚔️ 攻擊</button><button id="potionBtn" class="btn good" type="button">🧪 使用藥水</button></div>
+          <div id="endBox" class="end-box" hidden><strong id="endTitle"></strong><p id="endMessage" class="small" style="margin:0 0 10px"></p><button class="btn wide" id="continueBtn" type="button"></button><div class="reflection" id="reflection" hidden><b>課堂討論</b><ol><li>為甚麼第一次搜尋會有多個地址？</li><li>為甚麼再搜尋可以排除其他地址？</li><li>為甚麼十六進制方便我們閱讀記憶體？</li></ol></div></div>
+          <div class="log"><div class="log-title">戰鬥記錄</div><div id="logLines" class="log-lines" aria-live="polite"></div></div>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="scannerTitle">
+        <div class="panel-head"><h2 id="scannerTitle">Game Master｜記憶體搜尋器</h2><span class="pill">Memory Scanner</span></div>
+        <div class="panel-body">
+          <div class="modebar"><div><strong>整個記憶體的顯示模式</strong><span class="small muted">Address 和 Value 一起切換</span></div><div class="switch" role="group" aria-label="所有記憶體地址與數值的顯示進制"><button id="binBtn" class="active" type="button" aria-pressed="true">BIN</button><button id="hexBtn" type="button" aria-pressed="false">HEX</button></div></div>
+          <div id="nibbleDemo" class="nibble-demo" hidden aria-live="polite"><span>0000 → 0</span><span>0010 → 2</span><span>0011 → 3</span><span>0100 → 4</span></div>
+          <div class="scanner-info small muted"><p>先搜尋畫面上的<span style="color:#fff;font-weight:800">十進制數值</span>，再讓遊戲數值改變，透過再次搜尋逐步排除不符合的地址。</p></div>
+          <label for="searchInput" class="label">搜尋數值（DEC，0–255）</label>
+          <div class="search-row"><input id="searchInput" class="field mono" inputmode="numeric" type="text" placeholder="例如：5" maxlength="3" autocomplete="off"><button id="newSearch" class="btn" type="button">首次／新搜尋</button><button id="refineSearch" class="btn secondary" type="button" disabled>再次搜尋</button></div>
+          <p id="scanStatus" class="small muted" role="status">尚未開始搜尋。提示：可以先搜尋藥水數量 5。</p>
+          <div class="section-title"><h3>記憶體總覽 <span class="muted">(256 個地址)</span></h3><span class="small muted">可捲動查看</span></div>
+          <div id="memoryDump" class="memory-dump bin" aria-label="全部模擬記憶體地址及其數值"></div>
+          <div class="memory-caption"><span id="baseExplanation">Address：16 bits ｜ Value：8 bits</span><span>綠框：已找出的地址</span></div>
+          <div class="section-title"><h3>排除法搜尋結果 <span id="resultCount" class="muted">(0)</span></h3></div>
+          <div id="resultsBox" class="results-box"><div class="result-empty">在上方搜尋後，這裏會列出符合條件的記憶體地址。</div></div>
+          <div class="section-title"><h3>已找出的地址</h3></div><div class="known" id="knownList"><span class="small muted">找到唯一符合條件的地址後才會記錄在這裏。</span></div>
+          <div class="editor" id="editor">
+            <div class="editor-title">記憶體修改器｜Value Editor</div>
+            <p id="editTarget" class="small muted" style="margin:0">請先透過排除法找出唯一地址。</p>
+            <div class="editor-grid"><div><label for="editInput" class="label">要寫入的新數值（<span id="editBase">BIN</span>）</label><input id="editInput" class="field mono" type="text" placeholder="先找到地址" disabled autocomplete="off" spellcheck="false"></div><button id="writeBtn" class="btn good" type="button" disabled>寫入記憶體</button></div>
+            <p id="editStatus" class="small muted" role="status" style="margin:9px 0 0">進制切換只改變數值表示方式，不會改變記憶體內容。</p>
+            <label class="row small" style="justify-content:flex-start;margin-top:13px"><input id="freezeHp" type="checkbox" disabled> 鎖定勇者 HP（Freeze，延伸功能）</label>
+          </div>
+          <details class="help"><summary>老師提示｜建議的探索次序</summary><ol><li>先搜尋 <b>5</b>，觀察有多少個記憶體位置。</li><li>讓勇者受傷，使用一支藥水，數量變成 <b>4</b>。</li><li>按「再次搜尋」，輸入 <b>4</b>，找出從 5 變成 4 的地址。</li><li>切換成 HEX，將找到的數值改成 <b>FF</b>。</li><li>修改 HP、攻擊力或防禦力，再挑戰第五關 BOSS。</li></ol><p class="micro muted">重點：電腦資料以位元表示；1 個 HEX 位剛好對應 4 bits。這裏所有記憶體均為網頁內模擬。</p></details>
+        </div>
+      </section>
+    </div>
+    <p class="footer">同一份數據，兩種寫法：00000101₂ = 05₁₆ = 5₁₀　｜　11111111₂ = FF₁₆ = 255₁₀</p>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const LEVELS = [
+      { name:'普通史萊姆', hp:30, atk:8, def:2 },
+      { name:'強化史萊姆', hp:42, atk:10, def:4 },
+      { name:'鐵甲史萊姆', hp:54, atk:12, def:7 },
+      { name:'巨型史萊姆', hp:70, atk:16, def:9 },
+      // At least 1 damage always lands. BOSS remains difficult, but a high potion count
+      // or an attack/defence edit is a viable strategy rather than a zero-damage lock.
+      { name:'最終 BOSS', hp:96, atk:17, def:23 }
+    ];
+    // Static indexes are stable memory addresses across all five stages.
+    const LOC = Object.freeze({heroHp:9,heroAtk:24,heroDef:37,potions:52,enemyHp:64,enemyAtk:75,enemyDef:88});
+    const TITLES = {heroHp:'勇者 HP',heroAtk:'勇者 ATK',heroDef:'勇者 DEF',potions:'回復藥水',enemyHp:'敵人 HP',enemyAtk:'敵人 ATK',enemyDef:'敵人 DEF'};
+    const START = {heroHp:100,heroAtk:15,heroDef:5,potions:5,enemyHp:30,enemyAtk:8,enemyDef:2};
+    const clamp = n => Math.max(0,Math.min(255,Math.trunc(n)));
+    const address = i => base===2
+      ? (0x200+i).toString(2).padStart(16,'0').replace(/(.{4})(?=.)/g,'$1 ')
+      : '0x' + (0x200+i).toString(16).toUpperCase().padStart(4,'0');
+    const entries = Object.entries(LOC);
+    const statAt = i => (entries.find(([,idx]) => idx===i)||[])[0];
+    const fmt = n => Number(n).toString(base===2?2:16).toUpperCase().padStart(base===2?8:2,'0');
+    const displayValue = n => base===2 ? fmt(n).replace(/(.{4})(?=.)/g,'$1 ') : fmt(n);
+    const HERO_PIXELS = [
+      '....................','.......NNNNNN.......','......NBBBBBBN......',
+      '.....NBBCCCCBBN.....','.....NBFFFFFBN......','.....NBFEFFEBN......',
+      '......NFFFFFN.......','.......NNNNNN.......','...WW...NBBN...SS...',
+      '...WW..NBBBBN..SSSS.','...WW.NBBCCBBN.SSYY.','...WW.NBBBBBBN.SSYY.',
+      '...WW..NBBBBN..SSSS.','...YY..NBBBBN...SS..','...YY...NBBN........',
+      '.......NNBBNN.......','......NBB..BBN......','......NDD..DDN......',
+      '.......DD..DD.......','....................'
+    ];
+    const SLIME_PIXELS = [
+      '....................','....................','.......OOOOOO.......',
+      '.....OOMMMMMMOO.....','....OMMMMMMMMMMO....','...OMMHHMMMMMMMMO...',
+      '..OMMMHHMMMMMMMMMO..','..OMMMMMMMMMMMMMMO..','.OMMMMWWMMMMWWMMMMO.',
+      '.OMMMMKKMMMMKKMMMMO.','.OMMMMMMMMMMMMMMMMO.','..OMMMMMMKKMMMMMMO..',
+      '..OMMMMMMMMMMMMMMO..','...OMMMMMMMMMMMMO...','....OOOOOOOOOOOO....',
+      '....................','....................','....................',
+      '....................','....................'
+    ];
+    const SLIME_PALETTES = [
+      {O:'#176754',M:'#45ca8b',H:'#9df1bd'},
+      {O:'#1d5b91',M:'#4fa9df',H:'#b7e6fd'},
+      {O:'#4b5c6a',M:'#859baa',H:'#c7d6dd'},
+      {O:'#5d346f',M:'#a66ed0',H:'#e1b9fa'},
+      {O:'#562469',M:'#914dbe',H:'#dc9ded'}
+    ];
+    function pixelSvg(rows,palette,boss=false){
+      const p={...palette,W:'#f2f8ff',K:'#263448'};
+      const offset=boss?3:0, height=boss?24:20;
+      let pixels='';
+      rows.forEach((line,y)=>[...line.padEnd(20,'.').slice(0,20)].forEach((ch,x)=>{
+        if(p[ch])pixels+='<rect x="'+x+'" y="'+(y+offset)+'" width="1" height="1" fill="'+p[ch]+'"/>';
+      }));
+      if(boss){
+        // A compact pixel crown; no external graphics or network requests.
+        pixels+='<path fill="#a46e22" d="M5 3V0H7V2H9V0H11V2H13V0H15V3H14V6H6V3Z"/>';
+        pixels+='<path fill="#ffd46c" d="M6 1H7V4H13V1H14V5H6Z"/>';
+        pixels+='<rect x="9" y="3" width="2" height="2" fill="#e9668e"/>';
+      }
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 '+height+'" aria-hidden="true" shape-rendering="crispEdges">'+pixels+'</svg>';
+    }
+    const HERO_SVG=pixelSvg(HERO_PIXELS,{N:'#172c4f',B:'#398aca',C:'#b5dbef',F:'#ffd0a5',E:'#263448',W:'#e7f1ff',Y:'#f9c55e',S:'#b47b3b',D:'#825d45'});
+    function renderSprites(){
+      if($('heroSprite').innerHTML!==HERO_SVG)$('heroSprite').innerHTML=HERO_SVG;
+      $('enemySprite').innerHTML=pixelSvg(SLIME_PIXELS,SLIME_PALETTES[stage],stage===4);
+      $('enemySprite').className='pixel-sprite'+(stage===4?' boss':'');
+    }
+    function spriteEffect(id,kind){
+      const el=$(id);el.classList.remove?.('hit','healed');
+      void el.offsetWidth;
+      el.classList.add?.(kind);
+      if(typeof setTimeout==='function')setTimeout(()=>el.classList.remove?.(kind),410);
+    }
+    let base=2, stage=0, phase='playing', memory=[], scan=null, selected=null, known=new Set(), freeze=false, logs=[], note='', messageType='';
+    let scanBusy=false, firstHexDemo=true, spriteStage=-1;
+    let lastEditKey='';
+    function val(k){return memory[LOC[k]];}
+    function put(k,v){memory[LOC[k]]=clamp(v);}
+    function makeMemory(){
+      let seed=53913; const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+      const data=Array.from({length:256},()=>Math.floor(rnd()*256));
+      // Decoys are deliberately duplicated so an initial 5 or 100 search cannot reveal the answer.
+      [2,7,15,19,32,43,57,68,80,92,107,125,144,163,198,234].forEach(i=>data[i]=5);
+      [1,14,21,40,55,67,79,94].forEach(i=>data[i]=100);
+      [3,18,41,60,81].forEach(i=>data[i]=15);
+      [4,20,34,69].forEach(i=>data[i]=8);
+      [10,29,47,83].forEach(i=>data[i]=2);
+      for(const [key,idx] of entries)data[idx]=START[key];
+      return data;
+    }
+    function addLog(str){logs.unshift(str);logs=logs.slice(0,6);}
+    function announce(str,type=''){note=str;messageType=type;}
+    function fullReset(){memory=makeMemory();stage=0;phase='playing';scan=null;selected=null;known=new Set();freeze=false;logs=[];base=2;scanBusy=false;firstHexDemo=true;spriteStage=-1;lastEditKey='';$('nibbleDemo').hidden=true;$('searchInput').value='';$('editStatus').textContent='進制切換只改變數值表示方式，不會改變記憶體內容。';addLog('第 1 關開始。藥水有 5 支，請嘗試搜尋它的記憶體地址。');announce('先搜尋 5，再使用一支藥水，看看怎樣利用排除法找出地址。');render();}
+    function harm(atk,def){return Math.max(1,atk-def);}
+    function enemyTurn(){
+      if(freeze){addLog('敵人發動攻擊；Freeze 已鎖定勇者 HP。');return;}
+      const damage=harm(val('enemyAtk'),val('heroDef'));
+      put('heroHp',val('heroHp')-damage);
+      spriteEffect('heroCard','hit');
+      addLog('敵人反擊，勇者失去 '+damage+' HP。');
+      if(val('heroHp')===0){phase='lost';announce('勇者 HP 歸零。可重試本關；已找出的記憶體地址會保留。','warn');}
+    }
+    function winCheck(){if(val('enemyHp')===0){phase='won';if(stage===4){announce('已擊敗最終 BOSS！你成功運用記憶體修改改變戰局。','good');addLog('恭喜！五關挑戰完成。');}else{announce('擊敗 '+LEVELS[stage].name+'！準備前往下一關。','good');addLog('第 '+(stage+1)+' 關通過。');}return true;}return false;}
+    function attack(){if(phase!=='playing'||scanBusy)return;const damage=harm(val('heroAtk'),val('enemyDef'));put('enemyHp',val('enemyHp')-damage);addLog('勇者攻擊，造成 '+damage+' 傷害。');spriteEffect('enemyCard','hit');if(!winCheck())enemyTurn();render();}
+    function usePotion(){
+      if(phase!=='playing'||scanBusy||val('potions')===0)return;
+      const now=val('heroHp'), limit=now>100?255:100;
+      if(now>=limit){announce('目前 HP 已滿，暫時不能使用藥水。','warn');render();return;}
+      put('potions',val('potions')-1);put('heroHp',Math.min(limit,now+20));
+      addLog('使用回復藥水，數量減至 '+val('potions')+'，HP 回復 '+(val('heroHp')-now)+'。');
+      spriteEffect('heroCard','healed');enemyTurn();render();
+    }
+    function nextLevel(){
+      if(phase!=='won'||stage===4||scanBusy)return;
+      stage++;const foe=LEVELS[stage];
+      put('heroAtk',val('heroAtk')+1);put('heroDef',val('heroDef')+1);
+      put('enemyHp',foe.hp);put('enemyAtk',foe.atk);put('enemyDef',foe.def);
+      phase='playing';addLog('進入第 '+(stage+1)+' 關：'+foe.name+'。勇者 ATK、DEF 各提升 1。');
+      announce(stage===4?'最終 BOSS 非常強。嘗試找出並修改攻防數值！':'新的對手出現了。敵人攻防數值變化，也可以用來再次搜尋。');render();
+    }
+    function retry(){
+      if(phase!=='lost'||scanBusy)return;
+      const foe=LEVELS[stage];put('heroHp',100);put('potions',Math.max(5,val('potions')));
+      put('enemyHp',foe.hp);put('enemyAtk',foe.atk);put('enemyDef',foe.def);
+      phase='playing';addLog('重新挑戰本關；HP 已回復，藥水至少有 5 支。');
+      announce('重試不會刪除之前發現的記憶體地址或已修改的攻防數值。');render();
+    }
+    function parseDecimal(txt){const s=String(txt).trim();if(!/^\d{1,3}$/.test(s))return null;const n=Number(s);return n<=255?n:null;}
+    function identifyUnique(candidates){
+      selected=null;lastEditKey='';
+      if(candidates.length===1){selected=candidates[0].idx;known.add(selected);announce('搜尋剩下唯一地址 '+address(selected)+'，可以修改它的數值。','good');}
+      else if(!candidates.length){announce('沒有符合的候選地址。可重新搜尋或再觀察數值變化。','warn');}
+      else{announce('還有 '+candidates.length+' 個候選地址。讓遊戲數值改變後再搜尋。');}
+    }
+    function scanAction(first){
+      if(scanBusy)return;
+      const target=parseDecimal($('searchInput').value);
+      if(target===null){$('scanStatus').textContent='請輸入 0–255 的十進制整數。';return;}
+      if(!first&&!scan){$('scanStatus').textContent='請先進行首次搜尋。';return;}
+      $('editStatus').textContent='請先找到唯一地址，或從「已找出的地址」重新選取。';
+      if(first){
+        const candidates=memory.map((v,i)=>({idx:i,previous:null,value:v})).filter(c=>c.value===target);
+        scan={candidates,target,round:1,pending:null,summary:null};identifyUnique(candidates);render();return;
+      }
+      // Compare strictly with the last scan's snapshot, not a fresh full-memory search.
+      const rows=scan.candidates.map(c=>({idx:c.idx,previous:c.value,value:memory[c.idx],keep:memory[c.idx]===target}));
+      const survivors=rows.filter(c=>c.keep).map(c=>({idx:c.idx,previous:c.previous,value:c.value}));
+      const summary={before:rows.length,removed:rows.length-survivors.length,remaining:survivors.length};
+      const heldScan=scan;
+      scan.pending={rows,summary,target};scanBusy=true;selected=null;lastEditKey='';
+      announce('正在比較上次搜尋結果與目前記憶體數值……');render();
+      const finish=()=>{
+        if(scan!==heldScan||!scanBusy)return;
+        scan={candidates:survivors,target,round:heldScan.round+1,pending:null,summary};
+        scanBusy=false;identifyUnique(survivors);render();
+      };
+      const reduceMotion=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduceMotion||typeof setTimeout!=='function')finish();
+      else setTimeout(finish,560);
+    }
+    function selectKnown(idx){if(!known.has(idx)||scanBusy)return;selected=idx;lastEditKey='';render();}
+    function parseEdit(txt){const s=String(txt).trim().toUpperCase();if(base===2&&!/^[01]{1,8}$/.test(s))return null;if(base===16&&!/^[0-9A-F]{1,2}$/.test(s))return null;const n=parseInt(s,base);return Number.isInteger(n)&&n<=255?n:null;}
+    function commitWrite(){
+      if(selected===null||!known.has(selected)||scanBusy)return;
+      const n=parseEdit($('editInput').value);
+      if(n===null){$('editStatus').textContent=base===2?'請輸入 1–8 位 0 或 1（二進制）。':'請輸入 1–2 位 0–9 或 A–F（十六進制）。';return;}
+      const stat=statAt(selected),before=memory[selected];memory[selected]=n;
+      // A successful write refreshes the selected row's latest snapshot.
+      // Ordinary battle changes remain hidden until the student searches again.
+      if(scan){const row=scan.candidates.find(c=>c.idx===selected);if(row)row.value=n;}
+      $('editStatus').textContent=address(selected)+'：'+before+' → '+n+'（十進制）；寫入成功。';
+      if(stat){addLog('Game Master 已修改'+TITLES[stat]+'：'+before+' → '+n+'。');}
+      else{addLog('修改了模擬記憶體 '+address(selected)+'，但沒有影響目前戰鬥數值。');}
+      if(stat==='heroHp'&&n===0){phase='lost';announce('你將自己的 HP 改成 0 了！可重新挑戰。','warn');}
+      if(stat==='heroHp'&&n>0&&phase==='lost'){phase='playing';announce('HP 恢復，戰鬥可以繼續。','good');}
+      if(stat==='enemyHp'&&n===0&&phase==='playing')winCheck();
+      if(stat==='enemyHp'&&n>0&&phase==='won'&&stage!==4){phase='playing';}
+      if(stat==='potions'&&n===255)announce('成功！藥水 5 → 255；11111111₂ = FF₁₆。使用一支後會變成 FE。','good');
+      // Keep the last scan snapshot unchanged: a follow-up search still compares the prior scan with current memory.
+      lastEditKey='';render();
+    }
+    function renderGame(){
+      const foe=LEVELS[stage],heroHp=val('heroHp'),enemyHp=val('enemyHp');
+      if(spriteStage!==stage){renderSprites();spriteStage=stage;}
+      $('levelBadge').textContent='第 '+(stage+1)+' / 5 關';$('enemyName').textContent=foe.name;
+      $('heroHp').textContent=heroHp+' / 100'+(heroHp>100?'（修改值）':'');$('heroAtk').textContent=val('heroAtk');$('heroDef').textContent=val('heroDef');
+      $('enemyHp').textContent=enemyHp+' / '+foe.hp;$('enemyAtk').textContent=val('enemyAtk');$('enemyDef').textContent=val('enemyDef');
+      $('heroBar').style.width=Math.min(100,heroHp)+'%';$('enemyBar').style.width=(Math.min(100,enemyHp/foe.hp*100))+'%';
+      $('potionCount').textContent='× '+val('potions');
+      $('attackBtn').disabled=phase!=='playing'||scanBusy;$('potionBtn').disabled=phase!=='playing'||scanBusy||val('potions')===0||(heroHp>100?heroHp>=255:heroHp>=100);
+      $('endBox').hidden=phase==='playing';
+      $('continueBtn').disabled=scanBusy;$('reflection').hidden=!(phase==='won'&&stage===4);
+      if(phase==='won'){$('endTitle').textContent=stage===4?'🏁 五關完成！':'✅ 本關完成';$('endMessage').textContent=stage===4?'你運用了 Game Master 改變數值；相同資料可用 BIN 或 HEX 表示。':'敵人已被擊敗，可以前往下一關。';$('continueBtn').hidden=stage===4;$('continueBtn').textContent='進入第 '+(stage+2)+' 關';}
+      else if(phase==='lost'){$('endTitle').textContent='HP 已歸零';$('endMessage').textContent='可以重試本關，之前找到的地址會保留。';$('continueBtn').hidden=false;$('continueBtn').textContent='重新挑戰本關';}
+      $('gameHint').textContent=note;$('gameHint').className='notice'+(messageType==='warn'?' note-amber':messageType==='good'?' note-good':'');
+      $('logLines').innerHTML=logs.map(line=>'<div class="log-line">'+escapeHtml(line)+'</div>').join('');
+    }
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function renderScanner(){
+      $('binBtn').classList.toggle('active',base===2);$('hexBtn').classList.toggle('active',base===16);
+      $('binBtn').setAttribute('aria-pressed',base===2?'true':'false');$('hexBtn').setAttribute('aria-pressed',base===16?'true':'false');
+      const memoryScroll=Number.isFinite($('memoryDump').scrollTop)?$('memoryDump').scrollTop:0;
+      $('memoryDump').className='memory-dump '+(base===2?'bin':'hex');
+      $('baseExplanation').textContent=base===2?'Address：16 bits ｜ Value：8 bits':'Address：4 HEX 位 ｜ Value：2 HEX 位';
+      // Full Memory Dump is live, but no candidate-specific marks reveal which one changed.
+      $('memoryDump').innerHTML=memory.map((value,i)=>'<div class="memory-cell mono '+(known.has(i)?'identified':'')+'"><span class="mem-address">'+address(i)+'</span><strong class="mem-value">'+displayValue(value)+'</strong></div>').join('');
+      $('memoryDump').scrollTop=memoryScroll;
+      $('newSearch').disabled=scanBusy;$('refineSearch').disabled=!scan||scanBusy;
+      const pending=scan?.pending;
+      $('scanStatus').textContent=pending
+        ? '正在排除地址：原有 '+pending.summary.before+'，排除 '+pending.summary.removed+'，剩餘 '+pending.summary.remaining+'。'
+        :scan?'第 '+scan.round+' 次搜尋：數值 '+scan.target+'（DEC），目前有 '+scan.candidates.length+' 個候選地址。':'尚未開始搜尋。提示：可以先搜尋藥水數量 5。';
+      $('resultCount').textContent=pending?'('+pending.summary.before+' → '+pending.summary.remaining+')':'('+(scan?scan.candidates.length:0)+')';
+      if(!scan){$('resultsBox').innerHTML='<div class="result-empty">在上方搜尋後，這裏會列出符合條件的記憶體地址。</div>';}
+      else if(pending){
+        const {before,removed,remaining}=pending.summary;
+        $('resultsBox').innerHTML='<div class="scan-counter" style="padding:9px 12px 0">原有 <b>'+before+'</b>　<span class="removed">排除 '+removed+'</span>　<span class="remaining">剩餘 '+remaining+'</span></div>'+
+          '<table><thead><tr><th>Address</th><th>上次</th><th>現在</th><th>結果</th></tr></thead><tbody>'+
+          pending.rows.map(c=>'<tr class="'+(c.keep?'survivor':'eliminated')+'"><td class="mono">'+address(c.idx)+'</td><td class="mono">'+displayValue(c.previous)+'</td><td class="mono">'+displayValue(c.value)+'</td><td>'+(c.keep?'保留':'排除')+'</td></tr>').join('')+'</tbody></table>';
+      }
+      else if(!scan.candidates.length){$('resultsBox').innerHTML='<div class="result-empty">找不到符合的地址。請用「新搜尋」重來。</div>';}
+      else{
+        const hasPrev=scan.round>1;
+        const counter=scan.summary?'<div class="scan-counter" style="padding:9px 12px 0">原有 <b>'+scan.summary.before+'</b>　<span class="removed">排除 '+scan.summary.removed+'</span>　<span class="remaining">剩餘 '+scan.summary.remaining+'</span></div>':'';
+        $('resultsBox').innerHTML=counter+'<table><thead><tr><th>Address</th>'+(hasPrev?'<th>上次</th>':'')+'<th>目前 '+(base===2?'BIN':'HEX')+'</th></tr></thead><tbody>'+
+          scan.candidates.map(c=>'<tr class="'+(scan.candidates.length===1?'unique':'')+'"><td class="mono">'+address(c.idx)+'</td>'+(hasPrev?'<td class="mono subtle">'+displayValue(c.previous)+'</td>':'')+'<td class="mono '+(scan.candidates.length===1?'goodtext':'')+'">'+displayValue(c.value)+'</td></tr>').join('')+'</tbody></table>';
+      }
+      const found=[...known].sort((a,b)=>a-b);
+      $('knownList').innerHTML=found.length?found.map(i=>'<button type="button" data-memory="'+i+'" class="'+(selected===i?'selected':'')+'">'+escapeHtml(TITLES[statAt(i)]||'未知數值')+' · '+address(i)+'</button>').join(''):'<span class="small muted">找到唯一符合條件的地址後才會記錄在這裏。</span>';
+      $('editBase').textContent=base===2?'BIN':'HEX';$('editInput').disabled=selected===null||scanBusy;$('writeBtn').disabled=selected===null||scanBusy;
+      $('freezeHp').disabled=!known.has(LOC.heroHp)||scanBusy;$('freezeHp').checked=freeze;
+      const key=selected===null?'none':selected+':'+base;
+      if(selected===null){$('editTarget').textContent='請先透過排除法找出唯一地址。';$('editInput').placeholder='先找到地址';$('editInput').value='';}
+      else{
+        $('editTarget').textContent='已選擇 '+address(selected)+'｜'+(TITLES[statAt(selected)]||'未知數值')+'｜目前值 '+displayValue(memory[selected]);
+        $('editInput').placeholder=base===2?'例如：11111111':'例如：FF';
+        if(key!==lastEditKey||document.activeElement!==$('editInput'))$('editInput').value=fmt(memory[selected]);
+      }
+      lastEditKey=key;
+    }
+    function render(){renderGame();renderScanner();}
+    $('attackBtn').addEventListener('click',attack);
+    $('potionBtn').addEventListener('click',usePotion);
+    $('continueBtn').addEventListener('click',()=>phase==='lost'?retry():nextLevel());
+    $('newSearch').addEventListener('click',()=>scanAction(true));
+    $('refineSearch').addEventListener('click',()=>scanAction(false));
+    $('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')scanAction(!scan);});
+    $('writeBtn').addEventListener('click',commitWrite);
+    $('editInput').addEventListener('keydown',e=>{if(e.key==='Enter')commitWrite();});
+    $('knownList').addEventListener('click',e=>{const b=e.target.closest('button[data-memory]');if(b)selectKnown(Number(b.dataset.memory));});
+    function switchBase(next){
+      if(base===next)return;
+      base=next;lastEditKey='';render();
+      if(next===16&&firstHexDemo){
+        firstHexDemo=false;
+        const reduce=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(!reduce&&typeof setTimeout==='function'){
+          $('nibbleDemo').hidden=false;
+          setTimeout(()=>$('nibbleDemo').hidden=true,620);
+        }
+      }
+    }
+    $('binBtn').addEventListener('click',()=>switchBase(2));
+    $('hexBtn').addEventListener('click',()=>switchBase(16));
+    $('freezeHp').addEventListener('change',e=>{if(scanBusy)return;freeze=Boolean(e.target.checked);addLog('勇者 HP Freeze '+(freeze?'已開啟。':'已關閉。'));render();});
+    $('resetAll').addEventListener('click',()=>{if(window.confirm('確定重設五關進度、記憶體搜尋結果及所有修改嗎？'))fullReset();});
+    fullReset();
+    // Optional browser-based QA hook (read-only snapshot only).
+    window.HEXMasterQA=Object.freeze({snapshot:()=>({stage:stage+1,phase,heroHp:val('heroHp'),heroAtk:val('heroAtk'),heroDef:val('heroDef'),potions:val('potions'),enemyHp:val('enemyHp'),enemyAtk:val('enemyAtk'),enemyDef:val('enemyDef'),base,memoryCount:memory.length,scanBusy,candidates:scan?scan.candidates.map(c=>c.idx):[],known:[...known]})});
+  })();
+  </script>
+</body>
+</html>
